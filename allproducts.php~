@@ -1,0 +1,97 @@
+<?php
+include "main.php";
+include "ORM.php";
+	if(!empty($_GET['id']))
+	{
+	$id=$_GET['id'];
+	$product = ORM::getInstance();
+	$product->setTable('products');
+	$item=$product->select(array('id'=>$id));	
+	
+	$ph=trim($item[0]['image']);	
+	$files = "/var/www/html/project/$ph";
+	unlink($files);
+
+
+	$delete_product = ORM::getInstance();
+	$delete_product->setTable('products');
+	$delte_item=$delete_product->delete(array('id'=>$id));
+	}
+
+	$select_products=ORM::getInstance();
+	$select_products->setTable('products');
+	$selected_items=$select_products->select(array());
+	
+
+
+?>
+
+
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+	<link rel="stylesheet" href="style.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+	<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="../js/status.js"></script>
+
+</head>
+<body>
+
+
+
+
+<div class="container">
+<a href="/project/addproduct.php"  class="btn btn-primary pull-right"  role="button" >Add Product</a>
+<table  class="table table-bordered text-center">
+<th><center>Product</th>
+<th><center>Price</th>
+<th><center>Image</th>
+<th><center>status</th>
+<th><center>edit</th>
+<th><center>delete</th>
+<?php for($item=0;$item<count($selected_items);$item++){ ?>
+<tr>
+<td><?php echo $selected_items[$item]['name']; ?></td>
+<td><?php echo $selected_items[$item]['price']; ?></td>
+<td><img src="<?php echo $selected_items[$item]['image']; ?>"height="30px" width="30px"class="img-rounded " ></td>
+
+
+
+<td><!--<a href="<?php echo $selected_items[$item]['status']; ?>"class="btn btn-info" role="button"><?php echo $selected_items[$item]['status']; ?></a>-->
+
+
+
+
+<input type="submit" id="<?php echo $selected_items[$item]['id']?>" class="btn btn-info" value="<?php echo $selected_items[$item]['status']?>" onclick="ajax(<?php echo $selected_items[$item]['id']?>,'<?php echo $selected_items[$item]['status']?>')">
+
+
+
+
+
+
+
+
+
+<td><a href=" /project/editproduct.php/?id=<?php echo $selected_items[$item]['id'];?>" role="button" class="btn btn-primary">Edit</a></td>
+<td><a href=" /project/allproducts.php/?id=<?php echo $selected_items[$item]['id']; ?>"role="button" class="btn btn-danger">Delete</a></td>
+
+
+
+
+</td>
+</tr>
+<?php } ?>
+
+
+
+
+
+
+</table >
+
+</div>
+</body>
+</html>
